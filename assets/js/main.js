@@ -108,14 +108,18 @@ class UI {
     static handleFilterContainer() {
         const dataContainer = document.getElementById("dataContainer");
         const filterContainer = document.getElementById("filterContainer");
-        const allFilters = document.querySelectorAll(".filter-category__container");
+        const clearButton = document.getElementById("clearFilters");
+
+        const allFilters = Utilities.getFilters();
 
         if (allFilters.length) {
             dataContainer.classList.add("filters-on");
             filterContainer.classList.add("filters-show");
+            clearButton.classList.add("clear-show");
         } else {
             dataContainer.classList.remove("filters-on");
             filterContainer.classList.remove("filters-show");
+            clearButton.classList.remove("clear-show");
         }
     }
     static addFilterToList(filter) {

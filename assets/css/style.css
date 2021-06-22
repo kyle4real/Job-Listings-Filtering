@@ -181,6 +181,7 @@ main {
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+    border-radius: 5px;
     /* padding: 1rem 2rem; */
 }
 
@@ -278,6 +279,7 @@ main {
     position: absolute;
     top: -25px;
     left: 20px;
+    cursor: pointer;
 }
 @media screen and (min-width: 768px) {
     .job__img {

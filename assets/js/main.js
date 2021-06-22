@@ -2,9 +2,9 @@
 class UI {
     static displayJobs(jobs) {
         const filteredJobs = UI.filterJobs(jobs);
-        filteredJobs.forEach((job) => UI.addBookToList(job));
+        filteredJobs.forEach((job) => UI.addJobToList(job));
     }
-    static addBookToList(job) {
+    static addJobToList(job) {
         const dataContainer = document.getElementById("dataContainer");
 
         // the container
@@ -75,6 +75,9 @@ class UI {
             const jobTool = Utilities.addCategory(tool);
             jobCategories.appendChild(jobTool);
         });
+        jobCategories.childNodes.forEach((jobCategory) => {
+            Events.categoryButtons(jobCategory);
+        });
 
         // append all to job container
         jobContainer.appendChild(jobImg);
@@ -96,6 +99,69 @@ class UI {
             return filters.every((filter) => categoryArr.includes(filter));
         });
     }
+    static displayFilters() {
+        const filters = ["hi", "test"];
+        filters.forEach((filter) => UI.addFilterToList(filter));
+    }
+    static handleFilterContainer() {
+        const dataContainer = document.getElementById("dataContainer");
+        const filterContainer = document.getElementById("filterContainer");
+
+        if (true) {
+            dataContainer.classList.add("filters-on");
+            filterContainer.classList.add("filters-show");
+        }
+    }
+    static addFilterToList(filter) {
+        const filterContainer = document.getElementById("filters");
+
+        // create the element
+        const filterNode = document.createElement("div");
+        filterNode.className = "filter-category__container";
+
+        const filterName = document.createElement("p");
+        filterName.className = "filter__category";
+        filterName.textContent = filter;
+
+        const filterRemove = document.createElement("i");
+        filterRemove.className = "fas fa-times remove__filter";
+        // adding event listener to remove element
+        Events.filterButtons(filterRemove);
+
+        filterNode.appendChild(filterName);
+        filterNode.appendChild(filterRemove);
+
+        console.log(filterNode);
+        // append to container
+        filterContainer.appendChild(filterNode);
+    }
+    static addFilter(filter) {
+        const filters = ["Fullstack", "JavaScript"];
+        if (filters.includes(filter)) return;
+        UI.addFilterToList(filter);
+    }
+    static removeFilter(el) {
+        if (el.classList.contains("delete-filter")) {
+        }
+    }
+}
+
+class Events {
+    static categoryButtons(button) {
+        button.addEventListener("click", (e) => {
+            UI.addFilter(e.target.textContent);
+        });
+    }
+    static filterButtons(button) {
+        button.addEventListener("click", (e) => {
+            UI.removeFilter(e.target);
+        });
+    }
+}
+
+class Store {
+    static jobStore() {}
+    static filterStore() {}
 }
 
 class Utilities {
@@ -114,6 +180,8 @@ const main = async () => {
     const res = await fetch("./../../data.json");
     const jobsData = await res.json();
     UI.displayJobs(jobsData);
+    UI.handleFilterContainer();
+    UI.displayFilters();
 };
 
 document.addEventListener("DOMContentLoaded", () => {

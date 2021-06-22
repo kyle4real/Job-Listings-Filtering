@@ -33,8 +33,8 @@ class UI {
                 tools: ["React"],
             },
         ];
-
-        jobs.forEach((job) => UI.addBookToList(job));
+        const filteredJobs = UI.filterJobs(jobs);
+        filteredJobs.forEach((job) => UI.addBookToList(job));
     }
     static addBookToList(job) {
         const dataContainer = document.getElementById("dataContainer");
@@ -115,6 +115,19 @@ class UI {
 
         // append to data container
         dataContainer.appendChild(jobContainer);
+    }
+    static filterJobs(jobs) {
+        const filterNodes = document.querySelectorAll(".filter__category");
+        const filters = [];
+        filterNodes.forEach((filterNode) => {
+            filters.push(filterNode.textContent);
+        });
+        return jobs.filter((job) => {
+            if (filters.includes(job.role)) return job;
+            if (filters.includes(job.level)) return job;
+            if (job.languages.filter((language) => filters.includes(language)).length) return job;
+            if (job.tools.filter((tool) => filters.includes(tool)).length) return job;
+        });
     }
 }
 

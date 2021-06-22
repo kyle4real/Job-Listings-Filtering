@@ -106,10 +106,15 @@ class UI {
     static handleFilterContainer() {
         const dataContainer = document.getElementById("dataContainer");
         const filterContainer = document.getElementById("filterContainer");
+        const allFilters = document.querySelectorAll(".filter-category__container");
 
-        if (true) {
+        console.log(allFilters.length);
+        if (allFilters.length) {
             dataContainer.classList.add("filters-on");
             filterContainer.classList.add("filters-show");
+        } else {
+            dataContainer.classList.remove("filters-on");
+            filterContainer.classList.remove("filters-show");
         }
     }
     static addFilterToList(filter) {
@@ -136,25 +141,34 @@ class UI {
         filterContainer.appendChild(filterNode);
     }
     static addFilter(filter) {
+        const filterName = filter.textContent;
         const filters = ["Fullstack", "JavaScript"];
-        if (filters.includes(filter)) return;
-        UI.addFilterToList(filter);
+        if (filters.includes(filterName)) return;
+        UI.addFilterToList(filterName);
+        UI.handleFilterContainer();
     }
-    static removeFilter(el) {
-        if (el.classList.contains("delete-filter")) {
-        }
+    static removeFilter(filter) {
+        const filterContainer = filter.parentNode;
+        filterContainer.remove();
     }
 }
 
 class Events {
     static categoryButtons(button) {
         button.addEventListener("click", (e) => {
-            UI.addFilter(e.target.textContent);
+            UI.addFilter(e.target);
         });
     }
     static filterButtons(button) {
         button.addEventListener("click", (e) => {
             UI.removeFilter(e.target);
+        });
+    }
+    static clearButton() {
+        const clearFilters = document.getElementById("clearFilters");
+        clearFilters.addEventListener("click", () => {
+            const allFilters = document.querySelectorAll(".remove__filter");
+            allFilters.forEach((filter) => UI.removeFilter(filter));
         });
     }
 }
@@ -179,9 +193,10 @@ class Utilities {
 const main = async () => {
     const res = await fetch("./../../data.json");
     const jobsData = await res.json();
+    Events.clearButton();
     UI.displayJobs(jobsData);
-    UI.handleFilterContainer();
     UI.displayFilters();
+    UI.handleFilterContainer();
 };
 
 document.addEventListener("DOMContentLoaded", () => {

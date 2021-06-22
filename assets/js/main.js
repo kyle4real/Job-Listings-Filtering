@@ -1,8 +1,8 @@
 // UI Class
 class UI {
     static async displayJobs() {
-        const res = await fetch("./../../data.json");
-        const jobsData = await res.json();
+        const res = await fetch("data.json");
+        const jobsData = await res.json(res);
         // remove current display
         const currentJobs = document.querySelectorAll(".job__container");
         currentJobs.forEach((curr) => curr.remove());

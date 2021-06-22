@@ -1,38 +1,6 @@
 // UI Class
 class UI {
-    static displayJobs() {
-        const jobs = [
-            {
-                id: 1,
-                company: "Photosnap",
-                logo: "./images/photosnap.svg",
-                new: true,
-                featured: true,
-                position: "Senior Frontend Developer",
-                role: "Frontend",
-                level: "Senior",
-                postedAt: "1d ago",
-                contract: "Full Time",
-                location: "USA Only",
-                languages: ["HTML", "CSS", "JavaScript"],
-                tools: [],
-            },
-            {
-                id: 2,
-                company: "Manage",
-                logo: "./images/manage.svg",
-                new: true,
-                featured: true,
-                position: "Fullstack Developer",
-                role: "Fullstack",
-                level: "Midweight",
-                postedAt: "1d ago",
-                contract: "Part Time",
-                location: "Remote",
-                languages: ["Python"],
-                tools: ["React"],
-            },
-        ];
+    static displayJobs(jobs) {
         const filteredJobs = UI.filterJobs(jobs);
         filteredJobs.forEach((job) => UI.addBookToList(job));
     }
@@ -122,6 +90,7 @@ class UI {
         filterNodes.forEach((filterNode) => {
             filters.push(filterNode.textContent);
         });
+        if (!filters.length) return jobs;
         return jobs.filter((job) => {
             if (filters.includes(job.role)) return job;
             if (filters.includes(job.level)) return job;
@@ -143,8 +112,10 @@ class Utilities {
     }
 }
 
-const main = () => {
-    UI.displayJobs();
+const main = async () => {
+    const res = await fetch("./../../data.json");
+    const jobsData = await res.json();
+    UI.displayJobs(jobsData);
 };
 
 document.addEventListener("DOMContentLoaded", () => {

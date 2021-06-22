@@ -1,7 +1,13 @@
 // UI Class
 class UI {
-    static displayJobs(jobs) {
-        const filteredJobs = UI.filterJobs(jobs);
+    static async displayJobs() {
+        const res = await fetch("./../../data.json");
+        const jobsData = await res.json();
+        // remove current display
+        const currentJobs = document.querySelectorAll(".job__container");
+        currentJobs.forEach((curr) => curr.remove());
+        // add new display
+        const filteredJobs = UI.filterJobs(jobsData);
         filteredJobs.forEach((job) => UI.addJobToList(job));
     }
     static addJobToList(job) {
@@ -88,11 +94,7 @@ class UI {
         dataContainer.appendChild(jobContainer);
     }
     static filterJobs(jobs) {
-        const filterNodes = document.querySelectorAll(".filter__category");
-        const filters = [];
-        filterNodes.forEach((filterNode) => {
-            filters.push(filterNode.textContent);
-        });
+        const filters = Utilities.getFilters();
         if (!filters.length) return jobs;
         return jobs.filter((job) => {
             const categoryArr = [job.role, job.level, ...job.languages, ...job.tools];
@@ -100,7 +102,7 @@ class UI {
         });
     }
     static displayFilters() {
-        const filters = ["hi", "test"];
+        const filters = Utilities.getFilters();
         filters.forEach((filter) => UI.addFilterToList(filter));
     }
     static handleFilterContainer() {
@@ -108,7 +110,6 @@ class UI {
         const filterContainer = document.getElementById("filterContainer");
         const allFilters = document.querySelectorAll(".filter-category__container");
 
-        console.log(allFilters.length);
         if (allFilters.length) {
             dataContainer.classList.add("filters-on");
             filterContainer.classList.add("filters-show");
@@ -136,20 +137,33 @@ class UI {
         filterNode.appendChild(filterName);
         filterNode.appendChild(filterRemove);
 
-        console.log(filterNode);
         // append to container
         filterContainer.appendChild(filterNode);
     }
     static addFilter(filter) {
         const filterName = filter.textContent;
-        const filters = ["Fullstack", "JavaScript"];
+        const filters = Utilities.getFilters();
         if (filters.includes(filterName)) return;
         UI.addFilterToList(filterName);
         UI.handleFilterContainer();
+        Render.render();
     }
     static removeFilter(filter) {
         const filterContainer = filter.parentNode;
         filterContainer.remove();
+        UI.handleFilterContainer();
+        UI.displayJobs();
+        Render.rerender();
+    }
+}
+
+class Render {
+    static render() {
+        UI.displayJobs();
+        Events.clearButton();
+    }
+    static rerender() {
+        UI.displayJobs();
     }
 }
 
@@ -173,11 +187,6 @@ class Events {
     }
 }
 
-class Store {
-    static jobStore() {}
-    static filterStore() {}
-}
-
 class Utilities {
     static parseImgLink(link) {
         return `assets${link.slice(1)}`;
@@ -188,15 +197,18 @@ class Utilities {
         jobCategory.textContent = data;
         return jobCategory;
     }
+    static getFilters() {
+        const filterNodes = document.querySelectorAll(".filter__category");
+        const filters = [];
+        filterNodes.forEach((filterNode) => {
+            filters.push(filterNode.textContent);
+        });
+        return filters;
+    }
 }
 
 const main = async () => {
-    const res = await fetch("./../../data.json");
-    const jobsData = await res.json();
-    Events.clearButton();
-    UI.displayJobs(jobsData);
-    UI.displayFilters();
-    UI.handleFilterContainer();
+    Render.render();
 };
 
 document.addEventListener("DOMContentLoaded", () => {

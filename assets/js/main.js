@@ -92,10 +92,8 @@ class UI {
         });
         if (!filters.length) return jobs;
         return jobs.filter((job) => {
-            if (filters.includes(job.role)) return job;
-            if (filters.includes(job.level)) return job;
-            if (job.languages.filter((language) => filters.includes(language)).length) return job;
-            if (job.tools.filter((tool) => filters.includes(tool)).length) return job;
+            const categoryArr = [job.role, job.level, ...job.languages, ...job.tools];
+            return filters.every((filter) => categoryArr.includes(filter));
         });
     }
 }

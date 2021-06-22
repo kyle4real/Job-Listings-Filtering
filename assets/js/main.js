@@ -16,6 +16,9 @@ class UI {
         // the container
         const jobContainer = document.createElement("div");
         jobContainer.className = "job__container";
+        if (job.featured) {
+            jobContainer.classList.add("featured__display");
+        }
 
         // the img
         const jobImg = document.createElement("img");
